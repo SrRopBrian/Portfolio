@@ -1,17 +1,22 @@
 package com.example.portfolio
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,10 +41,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -48,6 +56,7 @@ import com.example.portfolio.ui.theme.DarkBlue
 import com.example.portfolio.ui.theme.Orange
 import com.example.portfolio.ui.theme.PortfolioTheme
 import com.example.portfolio.ui.theme.Violet
+import java.net.URL
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +88,16 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+object AppFonts {
+    val poppins = FontFamily(
+        Font(R.font.poppins_semibold, FontWeight.SemiBold)
+    )
+    val inter = FontFamily(
+        Font(R.font.inter_18pt_regular, FontWeight.Normal),
+        Font(R.font.inter_18pt_semibold, FontWeight.SemiBold)
+    )
+}
+
 @Composable
 fun GradientBackground(modifier: Modifier) {
     val colorStops = arrayOf(
@@ -99,13 +118,6 @@ fun GradientBackground(modifier: Modifier) {
 
 @Composable
 fun ProfileCard(modifier: Modifier) {
-    val poppins = FontFamily(
-        Font(R.font.poppins_semibold, FontWeight.SemiBold)
-    )
-    val inter = FontFamily(
-        Font(R.font.inter_18pt_regular, FontWeight.Normal)
-    )
-
     // Profile Picture Drawer
     Column(modifier = Modifier
         .fillMaxWidth(),
@@ -150,12 +162,12 @@ fun ProfileCard(modifier: Modifier) {
                 Spacer(modifier = Modifier.height(46.dp))
                 Text(text = "Rop Brian",
                     color = Color.White,
-                    fontFamily = poppins,
+                    fontFamily = AppFonts.poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 28.sp)
                 Text(text = "@menibryan",
                     color = Color.White.copy(alpha = 0.7f),
-                    fontFamily = inter,
+                    fontFamily = AppFonts.inter,
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp)
                 Spacer(modifier  = Modifier.height(16.dp))
@@ -167,17 +179,17 @@ fun ProfileCard(modifier: Modifier) {
                 ) {
                     Text(text = "🌅 10.05.2004",
                         color = Color.White,
-                        fontFamily = inter,
+                        fontFamily = AppFonts.inter,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp)
                     Text(text = "📱 Android Developer",
                         color = Color.White,
-                        fontFamily = inter,
+                        fontFamily = AppFonts.inter,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp)
                     Text(text = "🧑🏽‍💻 For the love of God | For the love of code",
                         color = Color.White,
-                        fontFamily = inter,
+                        fontFamily = AppFonts.inter,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp)
                 }
@@ -192,7 +204,7 @@ fun ProfileCard(modifier: Modifier) {
                     Spacer(modifier  = Modifier.width(3.dp))
                     Text(text = "Nairobi, Kenya",
                         color = Color.White,
-                        fontFamily = inter,
+                        fontFamily = AppFonts.inter,
                         fontWeight = FontWeight.Normal,
                         fontSize = 12.sp)
                     Spacer(modifier  = Modifier.width(16.dp))
@@ -205,7 +217,7 @@ fun ProfileCard(modifier: Modifier) {
                     Spacer(modifier  = Modifier.width(7.dp))
                     Text(text = "Joined in 2024",
                         color = Color.White,
-                        fontFamily = inter,
+                        fontFamily = AppFonts.inter,
                         fontWeight = FontWeight.Normal,
                         fontSize = 12.sp)
                 }
@@ -219,6 +231,7 @@ fun ProfileCard(modifier: Modifier) {
 // user social media handles and links
 @Composable
 fun UserHandles(modifier: Modifier) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth(0.8f)
@@ -233,25 +246,111 @@ fun UserHandles(modifier: Modifier) {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.email),
-                    contentDescription = "email",
-                    contentScale = ContentScale.FillBounds,
+                Box(
                     modifier = Modifier
                         .weight(2f)
                         .height(90.dp)
                         .clip(shape = RoundedCornerShape(12.dp))
-                )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.email),
+                        contentDescription = "email",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.external_link),
+                        contentDescription = "Mail me",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(21.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = -8.dp, y = 8.dp)
+                            .clickable {
+                                openLink(
+                                    context = context,
+                                    packageName = null,
+                                    fallbackURL = "mailto:kipngenobrian070@gmail.com"
+                                )
+                            }
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(
+                            text = "Email",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = "kipngenobrian070@gmail.com",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.width(12.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.facebook),
-                    contentDescription = "facebook",
-                    contentScale = ContentScale.Crop,
+                Box(
                     modifier = Modifier
                         .weight(1f)
                         .height(90.dp)
                         .clip(shape = RoundedCornerShape(12.dp))
-                )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.facebook),
+                        contentDescription = "facebook",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.external_link),
+                        contentDescription = "Friend me",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(21.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = -8.dp, y = 8.dp)
+                            .clickable {
+                                openLink(
+                                    context = context,
+                                    packageName = "com.facebook.katana",
+                                    fallbackURL = "https://www.facebook.com/ropbrian/"
+                                )
+                            }
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(
+                            text = "Facebook",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = "Brian Rop",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
             }
         }
 
@@ -260,16 +359,54 @@ fun UserHandles(modifier: Modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(12.dp))
+                .height(105.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.github),
                 contentDescription = "GitHub",
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.FillWidth,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(shape = RoundedCornerShape(12.dp))
-                    .height(100.dp)
+                    .fillMaxSize()
             )
+            Icon(
+                painter = painterResource(id = R.drawable.external_link),
+                contentDescription = "Git follow",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(21.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = -8.dp, y = 8.dp)
+                    .clickable {
+                        openLink(
+                            context = context,
+                            packageName = "com.github.android",
+                            fallbackURL = "https://github.com/menibryan"
+                        )
+                    }
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    text = "GitHub",
+                    fontFamily = AppFonts.inter,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = "@SrRopBrian",
+                    fontFamily = AppFonts.inter,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White,
+                    fontSize = 12.sp
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -281,16 +418,54 @@ fun UserHandles(modifier: Modifier) {
             Box(
                 modifier = Modifier
                     .weight(2f)
+                    .height(180.dp)
+                    .clip(shape = RoundedCornerShape(12.dp))
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.linkedin),
+                    painter = painterResource(id = R.drawable.linkedin_21),
                     contentDescription = "LinkedIn",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .clip(shape = RoundedCornerShape(12.dp))
+                        .fillMaxSize()
                 )
+                Icon(
+                    painter = painterResource(id = R.drawable.external_link),
+                    contentDescription = "LinkedIn profile",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(21.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = -8.dp, y = 8.dp)
+                        .clickable {
+                            openLink(
+                                context = context,
+                                packageName = "com.linkedin.android",
+                                fallbackURL = "https://www.linkedin.com/in/ropbrian/"
+                            )
+                        }
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Text(
+                        text = "LinkedIn",
+                        fontFamily = AppFonts.inter,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = "Rop Brian",
+                        fontFamily = AppFonts.inter,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White,
+                        fontSize = 12.sp
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(
@@ -301,50 +476,166 @@ fun UserHandles(modifier: Modifier) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxWidth()
+                        .height(85.dp)
+                        .clip(shape = RoundedCornerShape(12.dp))
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.medium),
-                        contentDescription = "Medium",
+                        painter = painterResource(id = R.drawable.dev),
+                        contentDescription = "Dev-Community",
                         contentScale = ContentScale.FillBounds,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(shape = RoundedCornerShape(12.dp))
+                        modifier = Modifier.fillMaxSize()
                     )
+                    Icon(
+                        painter = painterResource(id = R.drawable.external_link_black),
+                        contentDescription = "Dev Community",
+                        tint = Color.Black,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = -9.dp, y = 9.dp)
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(
+                            text = "Dev-Community",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black,
+                            fontSize = 11.sp
+                        )
+                        Text(
+                            text = "@ropbrian",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.Black,
+                            fontSize = 11.sp
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Box(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxWidth()
+                        .height(85.dp)
+                        .clip(shape = RoundedCornerShape(12.dp))
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.twitter),
                         contentDescription = "Twitter",
                         contentScale = ContentScale.FillBounds,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(shape = RoundedCornerShape(12.dp))
+                        modifier = Modifier.fillMaxSize()
                     )
+                    Icon(
+                        painter = painterResource(id = R.drawable.external_link),
+                        contentDescription = "Follow me",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = -9.dp, y = 9.dp)
+                            .clickable {
+                                openLink(
+                                    context = context,
+                                    packageName = "com.twitter.android",
+                                    fallbackURL = "https://www.twitter.com/ropkbrian"
+                                )
+                            }
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Text(
+                            text = "Twitter",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = "@ropkbrian",
+                            fontFamily = AppFonts.inter,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+                    }
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(10.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(12.dp))
+                .height(105.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.instagram),
+                painter = painterResource(id = R.drawable.gram),
                 contentDescription = "Instagram",
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(shape = RoundedCornerShape(12.dp))
-                    .height(100.dp)
+                    .fillMaxSize()
             )
+            Icon(
+                painter = painterResource(id = R.drawable.external_link),
+                contentDescription = "Follow me",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(21.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = -8.dp, y = 8.dp)
+                    .clickable {
+                        openLink(
+                            context = context,
+                            packageName = "com.instagram.android",
+                            fallbackURL = "https://www.instagram.com/menibryan/"
+                        )
+                    }
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    text = "Instagram",
+                    fontFamily = AppFonts.inter,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = "@menibryan",
+                    fontFamily = AppFonts.inter,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White,
+                    fontSize = 12.sp
+                )
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
+    }
+}
 
+fun openLink(context: Context, packageName: String?, fallbackURL: String) {
+    val intent = packageName?.let { context.packageManager.getLaunchIntentForPackage(it) }
+    if (intent != null) {
+        context.startActivity(intent)
+    } else {
+        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(fallbackURL))
+        context.startActivity(webIntent)
     }
 }
