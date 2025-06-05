@@ -45,9 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -56,12 +54,12 @@ import com.example.portfolio.ui.theme.DarkBlue
 import com.example.portfolio.ui.theme.Orange
 import com.example.portfolio.ui.theme.PortfolioTheme
 import com.example.portfolio.ui.theme.Violet
-import java.net.URL
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             PortfolioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -80,7 +78,6 @@ class MainActivity : ComponentActivity() {
                             ProfileCard(Modifier)
                             UserHandles(Modifier)
                         }
-
                     }
                 }
             }
@@ -119,12 +116,12 @@ fun GradientBackground(modifier: Modifier) {
 @Composable
 fun ProfileCard(modifier: Modifier) {
     // Profile Picture Drawer
-    Column(modifier = Modifier
-        .fillMaxWidth(),
+    Column(modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Spacer(modifier = Modifier.height(36.dp))
+
         Card(modifier = Modifier
             .fillMaxWidth(0.35f)
             .zIndex(1f)
@@ -147,7 +144,7 @@ fun ProfileCard(modifier: Modifier) {
             }
         }
 
-        // Bio
+        // Bio section
         Box(modifier = Modifier
             .fillMaxWidth(0.8f)
             .clip(RoundedCornerShape(24.dp))
@@ -155,7 +152,6 @@ fun ProfileCard(modifier: Modifier) {
             .padding(18.dp)
             ) {
             Column(
-                modifier = Modifier,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -381,7 +377,7 @@ fun UserHandles(modifier: Modifier) {
                         openLink(
                             context = context,
                             packageName = "com.github.android",
-                            fallbackURL = "https://github.com/menibryan"
+                            fallbackURL = "https://github.com/SrRopBrian"
                         )
                     }
             )
